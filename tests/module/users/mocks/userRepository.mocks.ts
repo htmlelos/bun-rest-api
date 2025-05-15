@@ -7,10 +7,10 @@ export const mockedFindByEmail = (email: string) => {
     return users.find(user => user.email === email)
 }
 
-export const mockedCreate = (user: Credential) => {
+export const mockedCreate = async (id: string,user: Credential) => {
     const encryptedUser = {
         ...user,
-        password: mockedHash(user.password, Bun.env.BCRYPT_SALT as string),
+        password: await mockedHash(user.password, Bun.env.BCRYPT_SALT as string),
         id: '1'
     }
     

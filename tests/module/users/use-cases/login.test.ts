@@ -12,7 +12,7 @@ describe('Login', () => {
 
     
     test('should have success to when login with valid credentials and get a token', async () => {
-        register(mockedValidCredentials)
+        await register(mockedValidCredentials)
 
         const response = await login(mockedValidCredentials)
 
@@ -22,19 +22,21 @@ describe('Login', () => {
         expect(response.user).toHaveProperty('email')
     })
 
-    test('shouldn\'t login with an unregistered email', () => {
-        expect(() => login({
-            email: 'test@example.com',
-            password: 'password'
-        } as Credential)).toThrow('User not found')
+    test('shouldn\'t login with an unregistered email', async () => {
+        await register(mockedValidCredentials)
+
+        await expect(login({
+            email: 'unregistered@example.com',
+            password: 'password123'
+        } as Credential)).rejects.toThrow('User not found')
     })
 
-    test('shouldn\'t login with an invalid password', () => {
-        register(mockedValidCredentials)
+    test('shouldn\'t login with an invalid password', async () => {
+        await register(mockedValidCredentials)
 
-        expect(() => login({
+        await expect(login({
             email: 'test@example.com',
             password: 'wrongPassword'
-        } as Credential)).toThrow('Invalid password')
+        } as Credential)).rejects.toThrow('Invalid password')
     })
 })

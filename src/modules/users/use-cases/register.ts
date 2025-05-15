@@ -2,47 +2,66 @@ import { randomUUIDv7 } from "bun"
 import { mockedJwtSign } from "../../../../tests/module/auth/mocks/jwt.mock"
 import { mockedUserRepository } from "../../../../tests/module/users/mocks/userRepository.mocks"
 import type { Credential } from "../User"
+import { mockedHash } from '../../../../tests/module/auth/mocks/bcrypt.mock'
 
-export const register = (credentials: Credential) => {
+export const register = async (credentials: Credential) => {
 
-    if (!credentials.email) {
+    const { email, password } = credentials
+
+    validateEmail(email)
+
+    checkUserExists(email)
+
+    validatePassword(password)
+
+    const id = randomUUIDv7()
+
+    const hashedPassword = await mockedHash(password, 10)
+
+    if (!hashedPassword) {
+        throw new Error('Error hashing password')
+    }
+
+    const createdUser = mockedUserRepository.create(id, {
+        ...credentials,
+        password: hashedPassword
+    })
+
+    return createdUser
+
+}
+const validateEmail = (email: string) => {
+    if (!email) {
         throw new Error('Email is required')
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-    if (!emailRegex.test(credentials.email)) {
+    if (!emailRegex.test(email)) {
         throw new Error('Email is invalid')
     }
+}
 
-    if (!credentials.password) {
+function validatePassword(password: string) {
+    if (!password) {
         throw new Error('Password is required')
     }
 
-    if (credentials.password.length < 6) {
+    if (password.length < 6) {
         throw new Error('Password must be at least 6 characters long')
-    }
-
-    const user = mockedUserRepository.findByEmail(credentials.email)
-
-    if (user?.email) {
-        throw new Error('User already exists')
     }
 
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d).+$/
 
-    if (!passwordRegex.test(credentials.password)) {
+    if (!passwordRegex.test(password)) {
         throw new Error('Password must contain at least one uppercase and a number')
     }
+}
 
-    const id = randomUUIDv7()
+function checkUserExists(email: string) {
+    const user = mockedUserRepository.findByEmail(email)
 
-    const encryptedPassword = mockedJwtSign({id}, Bun.env.JWT_SECRET as string)
-
-    const createdUser = mockedUserRepository.create({
-        ...credentials,
-        password: encryptedPassword
-    })
-
-    return createdUser
+    if (user?.email) {
+        throw new Error('User already exists')
+    }
 }
