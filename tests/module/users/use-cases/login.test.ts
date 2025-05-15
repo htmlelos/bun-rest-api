@@ -1,17 +1,23 @@
 import { beforeEach, describe, expect, test } from "bun:test";
-import { login } from "../../../../src/modules/users/use-cases/login";
-import { register } from "../../../../src/modules/users/use-cases/register";
+import { userRepository } from "../../../../src/modules/users/domain/repositories/user.repository";
+import { login } from "../../../../src/modules/users/application/use-cases/login";
 import type { Credential } from "../../../../src/modules/users/User";
-import { mockedDropDatabase, mockedValidCredentials } from "../mocks/userRepository.mocks";
+import { mockedValidCredentials } from "../mocks/userRepository.mocks";
+import { register } from "../../../../src/modules/users/application/use-cases/register";
 
 describe('Login', () => {
 
     beforeEach(() => {
-        mockedDropDatabase()
+        userRepository.dropDatabase()
     })
 
     
     test('should have success to when login with valid credentials and get a token', async () => {
+        const mockedValidCredentials = {
+            email: 'test@example.com',
+            password: 'Password123'
+        }
+        
         await register(mockedValidCredentials)
 
         const response = await login(mockedValidCredentials)

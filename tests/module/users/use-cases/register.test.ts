@@ -1,42 +1,54 @@
 import { beforeEach, describe, expect, test } from 'bun:test'
-import { register } from '../../../../src/modules/users/use-cases/register'
+import { userRepository } from '../../../../src/modules/users/domain/repositories/user.repository'
 import type { Credential } from '../../../../src/modules/users/User'
-import { mockedDropDatabase, mockedValidCredentials } from '../mocks/userRepository.mocks'
+import { register } from '../../../../src/modules/users/application/use-cases/register'
 
 describe('Register', () => {
   beforeEach(() => {
-    mockedDropDatabase()
+    userRepository.dropDatabase()
   })
 
   test('should register a new user when the data is valid', async () => {
-        const user = await register(mockedValidCredentials)
+    const mockedValidCredentials = {
+        email: 'test@example.com',
+        password: 'Password123'
+    }
+    
+    const response = await register(mockedValidCredentials)
 
-        expect(user).toHaveProperty('id')
-        expect(user).toHaveProperty('email')
-        expect(user).toHaveProperty('password')
-    })
+    expect(response).toHaveProperty('user')
+    expect(response).toHaveProperty('token')
+    expect(response.user).toHaveProperty('id')
+    expect(response.user).toHaveProperty('email')
+    expect(response.user).toHaveProperty('password')
+  })
 
-    test('shouldn\'t register a new user when the email is missing', () => {
-        expect(register({
+    test('shouldn\'t register a new user when the email is missing', async () => {
+        await expect(register({
             password: 'password'
         } as Credential)).rejects.toThrow('Email is required')
     })
 
-    test('shouldn\'t register a new user when the password is missing', () => {
-        expect(register({
+    test('shouldn\'t register a new user when the password is missing', async () => {
+        await expect(register({
             email: 'test@example.com'
         } as Credential)).rejects.toThrow('Password is required')
     })
 
-    test('shouldn\'t register a new user when the email is invalid', () => {
-        expect(register({
+    test('shouldn\'t register a new user when the email is invalid', async () => {
+        await expect(register({
             email: 'test.example.com',
             password: 'password'
         } as Credential)).rejects.toThrow('Email is invalid')
     })
 
     test('shouldn\'t register a new user when the user already exists', async () => {
-        const user = await register(mockedValidCredentials)
+        const mockedValidCredentials = {
+            email: 'test@example.com',
+            password: 'Password123'
+        }
+        
+        await register(mockedValidCredentials)
 
         expect(register(mockedValidCredentials)).rejects.toThrow('User already exists')
     })
