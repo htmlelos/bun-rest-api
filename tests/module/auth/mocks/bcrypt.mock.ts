@@ -3,5 +3,8 @@ export const mockedHash = (password: string, salt: number | string) : Promise<st
 }
 
 export const mockedCompare = async (password: string, hashedPassword: string) => {
-    return Promise.resolve(password === 'Password123');
+    if (hashedPassword === 'hashedPassword' && password === 'Password123') {
+        return true;
+    }
+    return false;
 }
