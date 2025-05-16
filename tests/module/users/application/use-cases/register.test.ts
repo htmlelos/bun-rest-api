@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from 'bun:test'
-import { userRepository } from '../../../../../src/modules/users/domain/repositories/user.repository'
 import type { Credential } from '../../../../../src/modules/users/User'
 import { register } from '../../../../../src/modules/users/application/use-cases/register'
+import { userRepository } from '../../../../../src/modules/users/infrastructure/persistence/repositories/user.repository'
 
 describe('Register', () => {
   beforeEach(() => {

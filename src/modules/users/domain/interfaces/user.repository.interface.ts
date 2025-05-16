@@ -1,5 +1,5 @@
 import type { Credential } from "../../User"
-import type { User, UserWithId } from "../user"
+import type { User, UserWithId } from "../entities/user"
 
 export interface UserRepository {
     findByEmail(email: string): User | undefined

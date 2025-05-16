@@ -1,4 +1,4 @@
-import { userRepository } from "../../domain/repositories/user.repository";
+import { userRepository } from "../../infrastructure/persistence/repositories/user.repository";
 import type { Credential, User } from "../../User";
 import { bcryptService } from "../services/bcrypt.service";
 import { jwtService } from "../services/jwt.service";

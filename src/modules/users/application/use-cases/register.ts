@@ -1,8 +1,8 @@
 import { randomUUIDv7 } from "bun";
 import type { Credential } from "../../User";
-import { userRepository } from "../../domain/repositories/user.repository";
 import { bcryptService } from "../services/bcrypt.service";
 import { jwtService } from "../services/jwt.service";
+import { userRepository } from "../../infrastructure/persistence/repositories/user.repository";
 
 
 export const register = async (credentials: Credential) => {

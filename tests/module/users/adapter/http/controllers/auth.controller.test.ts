@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, spyOn, test } from 'bun:test';
 import type { NextFunction, Request, Response } from 'express';
-import { authController } from '../../../../../src/modules/users/adapters/http/controllers/auth.controllers';
-import { userRepository } from '../../../../../src/modules/users/domain/repositories/user.repository';
+import { authController } from '../../../../../../src/modules/users/adapters/http/controllers/auth.controllers';
+import { userRepository } from '../../../../../../src/modules/users/infrastructure/persistence/repositories/user.repository';
 
 describe('AuthController', () => {
     let mockRequest: Request;

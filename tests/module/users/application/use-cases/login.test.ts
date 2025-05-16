@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, test } from "bun:test";
-import { userRepository } from "../../../../../src/modules/users/domain/repositories/user.repository";
 import { login } from "../../../../../src/modules/users/application/use-cases/login";
 import type { Credential } from "../../../../../src/modules/users/User";
 import { mockedValidCredentials } from "../../mocks/userRepository.mocks";
 import { register } from "../../../../../src/modules/users/application/use-cases/register";
+import { userRepository } from "../../../../../src/modules/users/infrastructure/persistence/repositories/user.repository";
 
 describe('Login', () => {
 
